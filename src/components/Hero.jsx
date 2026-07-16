@@ -103,7 +103,21 @@ export default function Hero() {
       globalMouseY = e.clientY;
     };
 
+    // Perf: this tick used to run every frame for the life of the page and
+    // repaint a 40-layer text-shadow on a 17rem headline each time — the single
+    // biggest source of scroll jank. Now it (a) sleeps while the hero is off
+    // screen, and (b) does nothing once the cursor has settled.
+    let active = true;
+    let lastNormX = 999;
+    let lastNormY = 999;
+    let lastSpotX = -9999;
+    let lastSpotY = -9999;
+
+    const SHADOW_LAYERS = 14; // visually equivalent to 40, ~3x cheaper to paint
+
     const tick = () => {
+      if (!active) return;
+
       // Smooth lerp for buttery movement
       currMouseX += (globalMouseX - currMouseX) * 0.06;
       currMouseY += (globalMouseY - currMouseY) * 0.06;
@@ -114,46 +128,70 @@ export default function Hero() {
       const normX = (currMouseX / window.innerWidth - 0.5) * 2;
       const normY = (currMouseY / window.innerHeight - 0.5) * 2;
 
-      // Background image moves OPPOSITE to cursor (depth illusion)
-      gsap.set(heroBg, {
-        x: normX * -35,
-        y: normY * -35,
-        rotationY: normX * 4,
-        rotationX: normY * -4,
-      });
+      const moved =
+        Math.abs(normX - lastNormX) > 0.0015 || Math.abs(normY - lastNormY) > 0.0015;
+      const spotMoved =
+        Math.abs(spotX - lastSpotX) > 0.5 || Math.abs(spotY - lastSpotY) > 0.5;
 
-      // Text moves WITH cursor
-      gsap.set(heroText, {
-        x: normX * 30,
-        y: normY * 30,
-        rotationY: normX * 5,
-        rotationX: normY * -5,
-      });
+      // Idle cursor => zero paint work.
+      if (!moved && !spotMoved) return;
 
-      // Multi-layer warm 3D extrusion (sunset-deep → ink)
-      const shadowMax = 60;
-      const shX = normX * -shadowMax;
-      const shY = normY * -shadowMax;
-      const layers = 40;
-      let shadowStr = "";
-      for (let i = 1; i <= layers; i++) {
-        const factor = i / layers;
-        // Interpolate from sunset-deep (#b3502d → r:179,g:80,b:45) to ink (#3e2a1e → r:62,g:42,b:30)
-        const r = Math.round(179 + (62 - 179) * factor);
-        const g = Math.round(80 + (42 - 80) * factor);
-        const b = Math.round(45 + (30 - 45) * factor);
-        shadowStr += `${shX * factor}px ${shY * factor}px 0 rgba(${r},${g},${b},1)`;
-        if (i < layers) shadowStr += ", ";
+      if (moved) {
+        lastNormX = normX;
+        lastNormY = normY;
+
+        // Background image moves OPPOSITE to cursor (depth illusion)
+        gsap.set(heroBg, {
+          x: normX * -35,
+          y: normY * -35,
+          rotationY: normX * 4,
+          rotationX: normY * -4,
+        });
+
+        // Text moves WITH cursor
+        gsap.set(heroText, {
+          x: normX * 30,
+          y: normY * 30,
+          rotationY: normX * 5,
+          rotationX: normY * -5,
+        });
+
+        // Multi-layer warm 3D extrusion (sunset-deep → ink)
+        const shadowMax = 60;
+        const shX = normX * -shadowMax;
+        const shY = normY * -shadowMax;
+        let shadowStr = "";
+        for (let i = 1; i <= SHADOW_LAYERS; i++) {
+          const factor = i / SHADOW_LAYERS;
+          // Interpolate from sunset-deep (#b3502d → r:179,g:80,b:45) to ink (#3e2a1e → r:62,g:42,b:30)
+          const r = Math.round(179 + (62 - 179) * factor);
+          const g = Math.round(80 + (42 - 80) * factor);
+          const b = Math.round(45 + (30 - 45) * factor);
+          shadowStr += `${shX * factor}px ${shY * factor}px 0 rgba(${r},${g},${b},1)`;
+          if (i < SHADOW_LAYERS) shadowStr += ", ";
+        }
+        heroText.style.textShadow = shadowStr;
+
+        // Bottom labels inverse parallax
+        if (bottomLeft) gsap.set(bottomLeft, { x: normX * 16, y: normY * 20 });
+        if (bottomRight) gsap.set(bottomRight, { x: normX * -16, y: normY * -20 });
       }
-      heroText.style.textShadow = shadowStr;
 
-      // Bottom labels inverse parallax
-      if (bottomLeft) gsap.set(bottomLeft, { x: normX * 16, y: normY * 20 });
-      if (bottomRight) gsap.set(bottomRight, { x: normX * -16, y: normY * -20 });
-      if (spotlight) {
+      if (spotMoved && spotlight) {
+        lastSpotX = spotX;
+        lastSpotY = spotY;
         spotlight.style.background = `radial-gradient(circle 340px at ${spotX}px ${spotY}px, rgba(232,98,44,0.14), rgba(217,164,65,0.05) 40%, transparent 62%)`;
       }
     };
+
+    // Sleep the whole effect once the hero scrolls away.
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        active = entry.isIntersecting;
+      },
+      { threshold: 0 }
+    );
+    if (scope.current) io.observe(scope.current);
 
     window.addEventListener("pointermove", onMouseMove);
     gsap.ticker.add(tick);
@@ -161,6 +199,7 @@ export default function Hero() {
     return () => {
       window.removeEventListener("pointermove", onMouseMove);
       gsap.ticker.remove(tick);
+      io.disconnect();
 
       // Reset transforms on cleanup
       if (heroBg) gsap.set(heroBg, { clearProps: "all" });

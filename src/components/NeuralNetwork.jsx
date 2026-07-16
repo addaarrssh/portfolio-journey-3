@@ -109,6 +109,7 @@ export default function NeuralNetwork() {
     }
 
     function animate() {
+      if (!running) return;
       ctx.clearRect(0, 0, width, height);
 
       particles.forEach((p) => {
@@ -119,6 +120,20 @@ export default function NeuralNetwork() {
       drawLines();
       animationFrameId = requestAnimationFrame(animate);
     }
+
+    // Only burn frames while this canvas is actually on screen. Without this,
+    // every mounted instance runs its O(n²) link pass forever — including the
+    // one buried inside the notebook — which starves scrolling.
+    let running = false;
+    const start = () => {
+      if (running) return;
+      running = true;
+      animate();
+    };
+    const stop = () => {
+      running = false;
+      cancelAnimationFrame(animationFrameId);
+    };
 
     // Handle resize
     const handleResize = () => {
@@ -147,10 +162,25 @@ export default function NeuralNetwork() {
       parent.addEventListener('mouseleave', handleMouseLeave);
     }
 
-    animate();
+    let onScreen = false;
+    const sync = () => (onScreen && !document.hidden ? start() : stop());
+
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        onScreen = entry.isIntersecting;
+        sync();
+      },
+      { threshold: 0 }
+    );
+    io.observe(canvas);
+
+    // Also idle out when the tab is hidden.
+    document.addEventListener('visibilitychange', sync);
 
     return () => {
-      cancelAnimationFrame(animationFrameId);
+      stop();
+      io.disconnect();
+      document.removeEventListener('visibilitychange', sync);
       window.removeEventListener('resize', handleResize);
       if (parent) {
         parent.removeEventListener('mousemove', handleMouseMove);

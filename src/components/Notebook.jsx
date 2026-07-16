@@ -168,6 +168,32 @@ function AnimatedNotebook() {
     if (!cover || !spread || !spreadWrap || !overlay || !path || !dot || !pagesContent) return;
 
     const pathLength = path.getTotalLength();
+
+    // Perf: getPointAtLength() is real SVG geometry work and the old loop called
+    // it ~9x per frame (pen + 8 trail dots). Sample the curve once up front and
+    // read from the table instead — identical visuals, near-zero per-frame cost.
+    const SAMPLES = 600;
+    const pathPts = new Array(SAMPLES + 1);
+    for (let i = 0; i <= SAMPLES; i++) {
+      pathPts[i] = path.getPointAtLength((i / SAMPLES) * pathLength);
+    }
+    const ptAt = (t) =>
+      pathPts[Math.max(0, Math.min(SAMPLES, Math.round(t * SAMPLES)))];
+
+    // Cached once the finale text has a measurable width (avoids a forced
+    // layout every single frame).
+    let sigTextW = 0;
+
+    // Re-parsing + repainting a full-page radial gradient on every frame is
+    // expensive. Only rewrite it when the lamp has actually moved.
+    let lastSx = -99999;
+    let lastSy = -99999;
+    const setSpot = (x, y) => {
+      if (Math.abs(x - lastSx) < 1.5 && Math.abs(y - lastSy) < 1.5) return;
+      lastSx = x;
+      lastSy = y;
+      overlay.style.background = spotlight(x, y);
+    };
     gsap.set(path, { strokeDasharray: pathLength, strokeDashoffset: pathLength });
     gsap.set(dot, { opacity: 0 });
     gsap.set(pagesContent, { opacity: 0 });
@@ -393,11 +419,11 @@ function AnimatedNotebook() {
       if (hudFill) hudFill.style.width = `${(tl.progress() * 100).toFixed(1)}%`;
 
       if (animState.progress > 0) {
-        const point = path.getPointAtLength(animState.progress * pathLength);
+        const point = ptAt(animState.progress);
         px = point.x;
         py = point.y;
 
-        overlay.style.background = spotlight(px, py);
+        setSpot(px, py);
         dot.setAttribute("cx", px);
         dot.setAttribute("cy", py);
 
@@ -415,14 +441,14 @@ function AnimatedNotebook() {
         // Comet trail: sample points slightly behind the dot along the path
         trails.forEach((c, i) => {
           const behind = Math.max(0, animState.progress - (i + 1) * 0.011);
-          const pt = path.getPointAtLength(behind * pathLength);
+          const pt = ptAt(behind);
           c.setAttribute("cx", pt.x);
           c.setAttribute("cy", pt.y);
           c.style.opacity =
             animState.progress > 0.004 ? 0.5 * (1 - (i + 1) / (TRAIL_COUNT + 1)) : 0;
         });
       } else {
-        overlay.style.background = spotlight(px, py);
+        setSpot(px, py);
         trails.forEach((c) => { c.style.opacity = 0; });
         if (pen) pen.style.opacity = "0";
       }
@@ -492,7 +518,8 @@ function AnimatedNotebook() {
         // Reveal the name left→right, as if being written.
         sigText.style.clipPath = `inset(0 ${(1 - s) * 100}% -20% 0)`;
         if (sigNib) {
-          const w = sigText.getBoundingClientRect().width;
+          if (!sigTextW) sigTextW = sigText.getBoundingClientRect().width;
+          const w = sigTextW;
           sigNib.style.transform = `translate(${s * w}px, -50%)`;
           sigNib.style.opacity = animState.sigShow * (s > 0.004 && s < 0.985 ? 1 : 0);
         }

@@ -34,3 +34,4 @@ db_write_*
 __pycache__/
 extracted_*.jsx
 first_update_raw.jsx
+.vercel

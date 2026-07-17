@@ -17,6 +17,14 @@ export default function DrawingsTrail() {
   const activeImages = useRef([]);
 
   useEffect(() => {
+    // Preload all drawings to prevent network latency lag during mouse moves
+    const preloadedImages = [];
+    for (let i = 1; i <= TOTAL_DRAWINGS; i++) {
+      const img = new Image();
+      img.src = `/images/drawings/${i}.jpg`;
+      preloadedImages.push(img);
+    }
+
     // Cleanup active images on unmount
     return () => {
       activeImages.current.forEach((img) => {

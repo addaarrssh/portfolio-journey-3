@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { gsap } from "gsap";
 import { usePrefersReducedMotion } from "../hooks/usePrefersReducedMotion";
 
-const TOTAL_DRAWINGS = 38;
+const TOTAL_DRAWINGS = 41;
 const SPAWN_THRESHOLD = 140; // Pixels to move before spawning next image
 const MAX_IMAGES = 15;
 

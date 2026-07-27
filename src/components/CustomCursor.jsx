@@ -47,16 +47,24 @@ export default function CustomCursor() {
 
     // Smooth animation ticker
     const tick = () => {
+      const dx = mouse.x - cursorCoords.x;
+      const dy = mouse.y - cursorCoords.y;
+      const rdx = mouse.x - ringCoords.x;
+      const rdy = mouse.y - ringCoords.y;
+
+      if (Math.abs(dx) < 0.05 && Math.abs(dy) < 0.05 && Math.abs(rdx) < 0.05 && Math.abs(rdy) < 0.05) {
+        return;
+      }
+
       // Lerp for follow effect
-      // Dot is fast
-      cursorCoords.x += (mouse.x - cursorCoords.x) * 0.25;
-      cursorCoords.y += (mouse.y - cursorCoords.y) * 0.25;
+      cursorCoords.x += dx * 0.25;
+      cursorCoords.y += dy * 0.25;
       setCursorX(cursorCoords.x);
       setCursorY(cursorCoords.y);
 
       // Ring has slightly more lag (inertia)
-      ringCoords.x += (mouse.x - ringCoords.x) * 0.12;
-      ringCoords.y += (mouse.y - ringCoords.y) * 0.12;
+      ringCoords.x += rdx * 0.12;
+      ringCoords.y += rdy * 0.12;
       setRingX(ringCoords.x - cursorCoords.x); // Offset relative to container
       setRingY(ringCoords.y - cursorCoords.y);
     };

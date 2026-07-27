@@ -233,7 +233,7 @@ function AnimatedNotebook() {
         trigger: root,
         start: "top top",
         end: "bottom bottom",
-        scrub: 1.6,
+        scrub: 0.6,
         invalidateOnRefresh: true
       }
     });

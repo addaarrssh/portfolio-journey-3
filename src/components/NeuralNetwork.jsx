@@ -13,7 +13,7 @@ export default function NeuralNetwork() {
     let height = (canvas.height = canvas.offsetHeight);
 
     const particles = [];
-    const particleCount = 60; // Perfect balance of density and performance
+    const particleCount = 28; // Optimized for 60fps responsiveness across devices
     const connectionDistance = 110;
     const mouseConnectionDistance = 160;
 

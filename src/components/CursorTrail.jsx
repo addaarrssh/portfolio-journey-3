@@ -44,6 +44,7 @@ export default function CursorTrail() {
       if (points.length > MAX_POINTS) points.shift();
       lastX = e.clientX;
       lastY = e.clientY;
+      startDraw();
     };
 
     // ink colour: blue (53,80,178) drying to sepia (138,111,78)
@@ -56,6 +57,11 @@ export default function CursorTrail() {
 
     let raf = 0;
     const draw = () => {
+      if (points.length === 0) {
+        raf = 0;
+        return;
+      }
+
       const now = performance.now();
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       ctx.lineCap = "round";
@@ -79,7 +85,16 @@ export default function CursorTrail() {
       // trim fully-faded points from the front
       while (points.length && now - points[0].t > LIFE) points.shift();
 
-      raf = requestAnimationFrame(draw);
+      if (points.length > 0) {
+        raf = requestAnimationFrame(draw);
+      } else {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        raf = 0;
+      }
+    };
+
+    const startDraw = () => {
+      if (!raf) raf = requestAnimationFrame(draw);
     };
 
     window.addEventListener("pointermove", onMove);

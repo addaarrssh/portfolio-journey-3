@@ -8,12 +8,22 @@ export default function WindDriver() {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
     let wind = 0;
+    let lastSet = -999;
     let raf = 0;
+
     const tick = () => {
       const v = window.__lenis ? window.__lenis.velocity || 0 : 0;
       const target = Math.max(-1, Math.min(1, v / 45));
       wind += (target - wind) * 0.12;
-      document.documentElement.style.setProperty("--wind", wind.toFixed(3));
+      
+      const windVal = Math.abs(wind) < 0.002 ? 0 : wind;
+
+      // Only touch documentElement style when value changes significantly
+      if (Math.abs(windVal - lastSet) > 0.005) {
+        lastSet = windVal;
+        document.documentElement.style.setProperty("--wind", windVal.toFixed(3));
+      }
+
       raf = requestAnimationFrame(tick);
     };
     raf = requestAnimationFrame(tick);

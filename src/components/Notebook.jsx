@@ -813,7 +813,7 @@ function AnimatedNotebook() {
               {/* Inner pages content (fades in as cover opens) */}
               <div
                 data-nb="pages-content"
-                className="absolute inset-0 rounded-lg shadow-[0_30px_80px_rgba(62,42,30,0.35)]"
+                className="absolute inset-0 rounded-lg shadow-[0_12px_28px_rgba(0,0,0,0.35)]"
                 style={{
                   background: "#14100c",
                   width: "100%",

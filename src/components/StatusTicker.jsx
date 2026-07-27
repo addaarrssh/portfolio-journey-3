@@ -20,12 +20,16 @@ export default function StatusTicker() {
   // Live scroll-progress readout — Lenis drives native scroll, so a plain
   // scroll listener (plus a rAF fallback) keeps this in sync.
   useEffect(() => {
+    let lastP = -1;
     let raf = 0;
     const update = () => {
       const max = document.documentElement.scrollHeight - window.innerHeight;
       const p = max > 0 ? Math.min(100, Math.round((window.scrollY / max) * 100)) : 0;
-      setPct(p);
-      if (fillRef.current) fillRef.current.style.width = `${p}%`;
+      if (p !== lastP) {
+        lastP = p;
+        setPct(p);
+        if (fillRef.current) fillRef.current.style.width = `${p}%`;
+      }
     };
     const onScroll = () => {
       cancelAnimationFrame(raf);

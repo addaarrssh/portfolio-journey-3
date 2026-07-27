@@ -13,11 +13,12 @@ const prefersReducedMotion = window.matchMedia(
 ).matches
 
 if (!prefersReducedMotion) {
-  const lenis = createLenis({ duration: 1.1, smoothWheel: true })
+  const lenis = createLenis({ duration: 0.7, smoothWheel: true })
   window.__lenis = lenis
   lenis.on('scroll', ScrollTrigger.update)
   gsap.ticker.add((time) => lenis.raf(time * 1000))
-  gsap.ticker.lagSmoothing(0)
+  // Proper lag smoothing: prevents frame jumps/freezing if CPU/GPU dips briefly
+  gsap.ticker.lagSmoothing(1000, 16)
 }
 
 createRoot(document.getElementById('root')).render(

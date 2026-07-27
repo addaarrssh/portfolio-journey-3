@@ -779,7 +779,7 @@ function AnimatedNotebook() {
         <div className="relative z-10 w-full h-full" style={{ perspective: "1800px" }}>
 
           {/* Main camera scaled / panned wrapper */}
-          <div data-nb="spread-wrap" className="absolute top-0 left-0 origin-top-left will-change-transform">
+          <div data-nb="spread-wrap" className="absolute top-0 left-0 origin-top-left will-change-transform" style={{ transformStyle: "preserve-3d", backfaceVisibility: "hidden", WebkitBackfaceVisibility: "hidden" }}>
 
             {/* Soft desk shadow that grounds the book (width driven in JS
                 as the cover opens: narrow closed book → full open spread) */}

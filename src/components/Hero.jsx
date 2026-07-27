@@ -113,7 +113,7 @@ export default function Hero() {
     let lastSpotX = -9999;
     let lastSpotY = -9999;
 
-    const SHADOW_LAYERS = 14; // visually equivalent to 40, ~3x cheaper to paint
+    const SHADOW_LAYERS = 4; // Lightweight 4-layer 3D extrusion, ultra-fast paint
 
     const tick = () => {
       if (!active) return;

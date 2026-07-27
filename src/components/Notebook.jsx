@@ -1180,19 +1180,8 @@ function AnimatedNotebook() {
                   />
                 ))}
 
-                {/* N2: the fountain pen that writes the whole journey */}
-                <g data-nb="pen" style={{ opacity: 0 }}>
-                  {/* nib (tip sits exactly on the path point at 0,0) */}
-                  <path d="M0 0 L-5 -13 L5 -13 Z" fill="#3550b2" stroke="#f5ead8" strokeWidth="1" />
-                  <line x1="0" y1="-3" x2="0" y2="-12" stroke="#f5ead8" strokeWidth="0.8" />
-                  {/* grip + barrel */}
-                  <path d="M-6 -13 L6 -13 L7 -24 L-7 -24 Z" fill="#1c140d" stroke="#f5ead8" strokeWidth="1" />
-                  <rect x="-7" y="-58" width="14" height="34" rx="6" fill="#241b14" stroke="#f5ead8" strokeWidth="1.4" />
-                  <rect x="-7" y="-44" width="14" height="5" fill="#d9a441" />
-                  <rect x="-7" y="-36" width="14" height="3" fill="#e8622c" />
-                  {/* cap finial */}
-                  <circle cx="0" cy="-60" r="4.5" fill="#e8622c" stroke="#f5ead8" strokeWidth="1" />
-                </g>
+                {/* Fountain pen graphic removed as requested */}
+                <g data-nb="pen" style={{ display: "none", opacity: 0 }} />
 
                 {/* Arrow directors along the dotted lines */}
                 <g transform="translate(420,442) rotate(60)"><path d="M0 0 L18 0 M18 0 L11 -7 M18 0 L11 7" stroke="#b3502d" strokeWidth="3" strokeLinecap="round" fill="none"></path></g>

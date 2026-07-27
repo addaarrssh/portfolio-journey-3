@@ -27,8 +27,9 @@ const FIREFLIES = [
 
 const TRAIL_COUNT = 8;
 
-// Spotlight disabled so all notebook content remains fully bright and readable
-const spotlight = (x, y) => "none";
+// Lamp-light spotlight: bright reading circle, warm rim, dark dusk outside
+const spotlight = (x, y) =>
+  `radial-gradient(circle 460px at ${x}px ${y}px, transparent 34%, rgba(232,98,44,0.05) 48%, rgba(26,17,9,0.62) 68%, rgba(20,13,7,0.92) 82%)`;
 import { useMediaQuery } from "../hooks/useMediaQuery";
 import NeuralNetwork from "./NeuralNetwork";
 import { soundManager } from "../config/soundManager";
@@ -1336,11 +1337,14 @@ function AnimatedNotebook() {
                 ))}
               </div>
 
-              {/* Spotlight overlay container (disabled for full content visibility) */}
+              {/* Spotlight overlay container */}
               <div
                 data-nb="overlay"
-                className="pointer-events-none absolute inset-0 z-20 hidden"
-                style={{ display: "none" }}
+                className="pointer-events-none absolute inset-0 z-20"
+                style={{
+                  background:
+                    "radial-gradient(circle 420px at 1500px 1235px, transparent 35%, rgba(20,16,12,0.96) 75%)",
+                }}
               />
               </div>
 

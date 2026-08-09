@@ -6,7 +6,7 @@ export const skillGroups = [
     id: "languages",
     label: "Languages",
     learning: false,
-    skills: ["Python", "SQL", "JavaScript", "HTML/CSS"],
+    skills: ["Python", "SQL", "JavaScript / TypeScript", "HTML/CSS", "PostgreSQL"],
   },
   {
     id: "data-analytics",
@@ -33,6 +33,9 @@ export const skillGroups = [
       "Preprocessing Pipelines",
       "Time-Series Forecasting",
       "Simulation-Based Prediction",
+      "Learning to Rank",
+      "Calibration & Abstention",
+      "Experiment Design",
     ],
   },
   {
@@ -51,6 +54,8 @@ export const skillGroups = [
       "Git",
       "GitHub",
       "VS Code",
+      "FastAPI",
+      "PostgreSQL",
     ],
   },
   {
@@ -108,6 +113,7 @@ export const skillGroups = [
       "AWS Deployment",
       "Model Monitoring",
       "Experiment Tracking",
+      "MLflow",
     ],
   },
 ];

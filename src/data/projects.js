@@ -40,6 +40,17 @@ export const projects = [
     tech: ["TypeScript", "React", "Vite", "FastAPI", "Python", "PuLP/CBC", "Pydantic"],
   },
   {
+    id: 'prahari',
+    category: CATEGORIES.AI_ML,
+    title: 'PRAHARI — Digital Fraud Intelligence Platform',
+    repo: 'https://github.com/addaarrssh/prahari',
+    liveUrl: null,
+    year: 2026,
+    description:
+      'Client-side scam detector with two independent engines — a weighted-signal rule engine covering 10+ fraud families in English, Hindi and Hinglish, and a character-trigram Naive Bayes classifier. Scored by leave-one-out cross-validation over a 48-message corpus whose 24 negatives are real bank OTP and KYC texts, with a threshold slider exposing the precision/recall trade-off. ET AI Hackathon 2026.',
+    tech: ['JavaScript', 'Naive Bayes', 'Rule Engine', 'NLP'],
+  },
+  {
     id: "ai-study-buddy",
     category: CATEGORIES.AI_ML,
     title: "AI Study Buddy — Exam-Focused RAG Assistant",
@@ -283,4 +294,5 @@ export const featuredProjectIds = [
   "search-ranking-model",
   "cartpulse",
   "customer-churn-prediction",
+  "prahari",
 ];

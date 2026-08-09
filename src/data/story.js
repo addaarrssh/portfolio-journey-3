@@ -32,13 +32,13 @@ export const originStory = {
   // REVIEW: the mockup's body text mentioned "marketing strategy," which
   // reads like a leftover from a different template — replaced with an
   // ML-appropriate equivalent below. Confirm this matches your real story.
-  body: "I had no idea what a loss function was in first year. I started by learning Python and building small projects. Over time, I focused on ML, RAG, and systems that make reliable, honest predictions.",
+  body: "I had no idea what a loss function was in first year. I started by learning Python and building small projects. Over time, I focused on ML, RAG, and systems that make reliable, honest predictions. Now interning at OA Helper, I am also learning how growth and user-acquisition work from the product side.",
 };
 
 export const purposeStory = {
   kicker: "02 — BUILDING WITH PURPOSE",
   noteTitle: "ART WITH A PURPOSE",
-  noteBody: "I build ML systems that are useful, measurable, and honest about what they can predict.",
+  noteBody: "I build ML systems that are useful, measurable, and honest about what they can predict. Currently applying this at OA Helper as a Growth Intern.",
   noteFooter: "systems that actually work in production.",
   statHighlight: { value: "0.84", label: "ROC-AUC · Churn Model" },
   sideAnnotation: "crazy what happens when you just make weirdly useful stuff.",

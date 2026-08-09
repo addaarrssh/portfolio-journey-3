@@ -27,7 +27,7 @@ export default function Contact() {
   const reducedMotion = usePrefersReducedMotion();
   const [form, setForm] = useState({ name: "", email: "", message: "" });
   const [errors, setErrors] = useState({});
-  const [status, setStatus] = useState("idle"); // idle | submitting | success
+  const [status, setStatus] = useState("idle"); // idle | submitting | success | error
   const formRef = useRef(null);
 
   const scope = useGsapAnimation((scope) => {
@@ -43,27 +43,45 @@ export default function Contact() {
 
   const handleChange = (field) => (e) => setForm((f) => ({ ...f, [field]: e.target.value }));
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const validationErrors = validate(form);
     setErrors(validationErrors);
     if (Object.keys(validationErrors).length > 0) return;
 
-    // TODO: this form has no backend yet. Wire this handler to a real form
-    // service (e.g. Formspree, EmailJS, or a custom API route) before
-    // relying on it to actually deliver messages.
     setStatus("submitting");
 
-    // Fold the form into a paper plane and fly it off before confirming.
+    // Fold the form into a paper plane while the request is in flight.
     const el = formRef.current;
-    if (el && !reducedMotion) {
-      el.classList.add("pp-fly");
-      window.setTimeout(() => {
-        el.classList.remove("pp-fly");
-        setStatus("success");
-      }, 900);
-    } else {
-      window.setTimeout(() => setStatus("success"), 900);
+    const fly = () => {
+      if (el && !reducedMotion) {
+        el.classList.add("pp-fly");
+        window.setTimeout(() => el.classList.remove("pp-fly"), 900);
+      }
+    };
+
+    try {
+      const res = await fetch(`https://formsubmit.co/ajax/${CONTACT_EMAIL}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        body: JSON.stringify({
+          name: form.name,
+          email: form.email,
+          message: form.message,
+          _subject: `Portfolio contact form — ${form.name}`,
+        }),
+      });
+      // FormSubmit responds HTTP 200 even when it rejects the message (e.g.
+      // pending one-time activation), so the body's own flag is the real signal.
+      const data = await res.json().catch(() => null);
+      if (!res.ok || !data || String(data.success).toLowerCase() !== "true") {
+        throw new Error(data?.message || `Request failed: ${res.status}`);
+      }
+
+      fly();
+      window.setTimeout(() => setStatus("success"), reducedMotion ? 0 : 900);
+    } catch (err) {
+      setStatus("error");
     }
   };
 
@@ -104,14 +122,9 @@ export default function Contact() {
           {status === "success" ? (
             <div className="flex flex-col items-center gap-3 py-6 text-center">
               <CheckCircle2 size={40} className="text-sunset" />
-              <p className="font-display text-lg text-ink">Message received.</p>
+              <p className="font-display text-lg text-ink">Message sent.</p>
               <p className="max-w-sm text-sm text-ink/60">
-                This is a simulated confirmation — the form isn&apos;t wired to a
-                real backend yet. In the meantime, email{" "}
-                <a href={`mailto:${CONTACT_EMAIL}`} className="text-sunset underline">
-                  {CONTACT_EMAIL}
-                </a>{" "}
-                directly.
+                Thanks for reaching out — I&apos;ll get back to you soon.
               </p>
             </div>
           ) : (
@@ -134,6 +147,16 @@ export default function Contact() {
                 onChange={handleChange("message")}
                 error={errors.message}
               />
+
+              {status === "error" && (
+                <p className="text-sm text-red-100">
+                  Something went wrong sending that — please email{" "}
+                  <a href={`mailto:${CONTACT_EMAIL}`} className="underline">
+                    {CONTACT_EMAIL}
+                  </a>{" "}
+                  directly instead.
+                </p>
+              )}
 
               <button type="submit" disabled={status === "submitting"} className="btn-primary justify-center">
                 {status === "submitting" ? "Sending…" : "Send Message"} <Send size={16} />

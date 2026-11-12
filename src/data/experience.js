@@ -3,7 +3,7 @@
 export const education = {
   id: "nit-jamshedpur",
   institution: "National Institute of Technology (NIT), Jamshedpur",
-  degree: "B.Tech in Production and Industrial Engineering",
+  degree: "B.Tech",
   location: "Jamshedpur, Jharkhand, India",
   startYear: 2024,
   endYear: 2028,

@@ -952,7 +952,7 @@ function AnimatedNotebook() {
               </svg>
               <div style={{ position: "absolute", left: "83px", top: "1275px", zIndex: 2, transform: "rotate(2deg)" }}>
                 <p style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "20px", lineHeight: 1.2, letterSpacing: "1px", color: "#f5ead8", margin: 0 }}>ADARSH</p>
-                <p style={{ fontFamily: "'Gloria Hallelujah', cursive", fontSize: "15px", lineHeight: 1.4, color: "#f5ead8", opacity: 0.8, margin: "12px 0 0" }}>Production &amp; Industrial Engineering, NIT Jamshedpur</p>
+                <p style={{ fontFamily: "'Gloria Hallelujah', cursive", fontSize: "15px", lineHeight: 1.4, color: "#f5ead8", opacity: 0.8, margin: "12px 0 0" }}>Student at NIT Jamshedpur</p>
                 <p style={{ fontFamily: "'Gloria Hallelujah', cursive", fontSize: "15px", lineHeight: 1.4, color: "#f5ead8", opacity: 0.7, margin: "18px 0 0" }}>from Jamshedpur, Jharkhand · loves drawing &amp; photography</p>
               </div>
               <svg style={{ position: "absolute", left: "580px", top: "760px", zIndex: 2 }} width="42" height="42" viewBox="0 0 42 42" fill="none">
@@ -1035,7 +1035,7 @@ function AnimatedNotebook() {
                   <circle cx="24" cy="22" r="8" stroke="#e8622c" strokeWidth="2.5" />
                 </svg>
                 <h3 style={{ fontFamily: "'Gloria Hallelujah', cursive", fontSize: "30px", color: "#e8622c", margin: "0 0 16px" }}>From Jamshedpur to NIT Jamshedpur</h3>
-                <p style={{ fontSize: "18px", lineHeight: "1.7", color: "#f5ead8", opacity: 0.85, margin: "0 0 14px" }}>I'm from Jamshedpur, Jharkhand, currently pursuing Production and Industrial Engineering at NIT Jamshedpur — while building my real path in CS and AI alongside academics. Some days mean classes and assignments, others mean debugging a project or exploring a new ML concept.</p>
+                <p style={{ fontSize: "18px", lineHeight: "1.7", color: "#f5ead8", opacity: 0.85, margin: "0 0 14px" }}>I'm from Jamshedpur, Jharkhand, currently a student at NIT Jamshedpur — while building my real path in CS and AI alongside academics. Some days mean classes and assignments, others mean debugging a project or exploring a new ML concept.</p>
                 <p style={{ fontSize: "18px", lineHeight: "1.7", color: "#f5ead8", opacity: 0.85, margin: 0 }}>I learn by trying things hands-on: breaking a complicated idea into smaller parts until it becomes something I can build, test, and understand. Outside coding, I enjoy drawing, clicking photos, and watching movies — reminders that good ideas come from observing the world, not just staring at a screen.</p>
               </div>
 
@@ -1472,7 +1472,7 @@ function StaticNotebook() {
           <img src="/images/journey-sunset.png" className="w-56 rounded-md shadow-md border border-[#f5ead8]/10" alt="Adarsh sunset picture" />
           <div className="space-y-1 text-sm opacity-80 leading-relaxed">
             <p className="font-bold text-base">NIT Jamshedpur</p>
-            <p>Production & Industrial Engineering</p>
+            <p>Student at NIT Jamshedpur</p>
             <p>from Jamshedpur, Jharkhand · loves drawing & photography</p>
           </div>
         </div>
